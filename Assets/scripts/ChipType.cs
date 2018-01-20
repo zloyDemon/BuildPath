@@ -10,5 +10,6 @@ public enum ChipType
     LEFT_DOWN,
     RIGHT_DOWN,
     UP_RIGHT,
+    BLOCK,
     EMPTY
 }

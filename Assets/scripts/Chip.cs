@@ -2,25 +2,67 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chip : MonoBehaviour {
+public class Chip : MonoBehaviour
+{
 
-    private ChipType _chip_type;
-
-    public ChipType chip_type
+    public struct ChipPoint
     {
-        get
-        {
-            return _chip_type;
-        }
+        public int x;
+        public int y;
 
-        set
+        public ChipPoint(int x, int y)
         {
-            _chip_type = value;
+            this.x = x;
+            this.y = y;
         }
     }
 
-    public void setChip(Sprite image)
+    private bool isCanClick = true;
+    private ChipPoint chipPoint;
+    private SpriteRenderer render;
+
+    public SceneController controller { get; set; }
+    public ChipType chip_type { get; set; }
+
+    private void Start()
     {
-        GetComponent<SpriteRenderer>().sprite = image;
+        render = GetComponent<SpriteRenderer>() as SpriteRenderer;
+    }
+
+    public void SetChip(Sprite image, ChipType type)
+    {
+        render.sprite = image;
+        if (type == ChipType.BLOCK)
+        {
+            isCanClick = false;
+        }
+        this.chip_type = type;
+    }
+
+    public void SetChipPoint(ChipPoint point)
+    {
+        chipPoint = point;
+    }
+
+    private void OnMouseDown()
+    {
+        OnChipClick();
+    }
+
+    public void ActivateChosenChip()
+    {
+        render.color = Color.red;
+    }
+
+    public void DeactivateChosenChip()
+    {
+        render.color = Color.white;
+    }
+
+    private void OnChipClick()
+    {
+        Debug.Log(chipPoint.x + " " + chipPoint.y);
+        controller.ChooseChip(this);
+        ActivateChosenChip();
     }
 }
