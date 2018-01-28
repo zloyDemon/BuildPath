@@ -7,6 +7,7 @@ public class Chip : MonoBehaviour
     private const float DEF_CHIP_ALPHA = 1f;
     private const float N_CHECK_CHIP_ALPHA = 0.5f;
 
+    [System.Serializable]
     public struct ChipPoint
     {
         public int x;
@@ -34,16 +35,13 @@ public class Chip : MonoBehaviour
     {
         chip_type = ChipType.EMPTY;
         render = GetComponent<SpriteRenderer>() as SpriteRenderer;
+        
         isCheck = isEnterPoint;
         ActivateChosenChip(isEnterPoint);
     }
 
     public void SetChip(Sprite image)
     {  
-        if (chip_type == ChipType.BLOCK)
-        {
-            isCanClick = false;
-        }
         render.sprite = image;
     }
 
@@ -68,9 +66,12 @@ public class Chip : MonoBehaviour
 
     private void OnChipClick()
     {
-        Debug.Log(chipPoint.x + " " + chipPoint.y + " type " + chip_type + " " + isCheck);
-        controller.ChooseChip(this);
-        ActivateChosenChip(true);
+        if(chip_type != ChipType.BLOCK)
+        {
+            Debug.Log(chipPoint.x + " " + chipPoint.y + " type " + chip_type + " " + isCheck);
+            controller.ChooseChip(this);
+            ActivateChosenChip(true);
+        }     
     }
 
     private Color SetAlpha(float alpha)
