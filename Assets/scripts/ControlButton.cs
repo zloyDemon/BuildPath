@@ -8,10 +8,10 @@ public class ControlButton : MonoBehaviour {
     public ChipType chipType;
 
     [SerializeField]
-    public SceneController controller;
+    public BPManager manager;
 	
     private void OnMouseDown()
     {
-        controller.ClickOnControl(chipType);
+        manager.ClickOnControl(chipType);
     }
 }

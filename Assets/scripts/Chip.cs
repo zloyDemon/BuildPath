@@ -25,17 +25,19 @@ public class Chip : MonoBehaviour
     private SpriteRenderer render;
 
     public ChipPoint chipPoint { get; set; }
-    public SceneController controller { get; set; }
+    public BPManager manager { get; set; }
     public ChipType chip_type { get; set; }
     public bool isCheck { get; set; }
     public bool isEnterPoint { get; set; }
 
-
-    private void Start()
+    private void Awake()
     {
         chip_type = ChipType.EMPTY;
         render = GetComponent<SpriteRenderer>() as SpriteRenderer;
-        
+    }
+
+    private void Start()
+    {   
         isCheck = isEnterPoint;
         ActivateChosenChip(isEnterPoint);
     }
@@ -69,8 +71,7 @@ public class Chip : MonoBehaviour
         if(chip_type != ChipType.BLOCK)
         {
             Debug.Log(chipPoint.x + " " + chipPoint.y + " type " + chip_type + " " + isCheck);
-            controller.ChooseChip(this);
-            ActivateChosenChip(true);
+            manager.ChooseChip(this);
         }     
     }
 
@@ -87,7 +88,7 @@ public class Chip : MonoBehaviour
 
     public void SetChipCheck(bool is_check)
     {
-        if(chip_type != ChipType.EMPTY && !isEnterPoint)
+        if(chip_type != ChipType.EMPTY && chip_type != ChipType.BLOCK && !isEnterPoint)
         {
             isCheck = is_check;
             render.color = SetAlpha(isCheck ? DEF_CHIP_ALPHA : N_CHECK_CHIP_ALPHA);

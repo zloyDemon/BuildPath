@@ -2,7 +2,7 @@
 using System.Threading;
 using UnityEngine;
 
-public class SceneController : MonoBehaviour
+public class BPManager : MonoBehaviour
 {
     enum Side
     {
@@ -13,7 +13,7 @@ public class SceneController : MonoBehaviour
     private const int MAX_ROW_VALUE = 4;
     private const int MAX_COLUMN_VALUE = MAX_ROW_VALUE;
 
-   
+
 
     [SerializeField]
     private Chip emptySprite;
@@ -56,18 +56,22 @@ public class SceneController : MonoBehaviour
 
     [SerializeField]
     private Vector2 gridOffset;
-   
+
     public Chip.ChipPoint[] block_point;
 
     private Chip chosenChip;
     private Chip checkCHip;
+
+    private bool isGameEnd;
+
     private Vector2 cellSize;
     private Vector2 cellScale;
 
     public Sprite cellSprite;
 
-    private Chip.ChipPoint enterPoint;
-    private Chip.ChipPoint exitPoint;
+    public Chip.ChipPoint enterPoint;
+    public Chip.ChipPoint exitPoint;
+
     private Chip[,] chips;
 
     void Start()
@@ -75,7 +79,7 @@ public class SceneController : MonoBehaviour
         //enterPoint.x = rows - 1;
         //enterPoint.y = 0;
 
-
+        isGameEnd = false;
         chips = new Chip[rows, cols];
         BuildChipGrid();
     }
@@ -84,24 +88,33 @@ public class SceneController : MonoBehaviour
 
     public void ChooseChip(Chip chosen)
     {
-        if (chosenChip != null)
+        if (!isGameEnd)
         {
-            chosenChip.ActivateChosenChip(false);
+            if (chosenChip != null)
+            {
+                chosenChip.ActivateChosenChip(false);
+            }
+            chosenChip = chosen;
+            chosenChip.ActivateChosenChip(true);
         }
-        chosenChip = chosen;
     }
 
     public void ClickOnControl(ChipType type)
     {
-        chosenChip.chip_type = type;
-        chosenChip.SetChip(SetChipSpriteByType(type));
-
-        foreach(Chip chip in chips)
+        if (!isGameEnd)
         {
-            chip.SetChipCheck(false);
+            chosenChip.chip_type = type;
+            chosenChip.SetChip(SetChipSpriteByType(type));
+
+            foreach (Chip chip in chips)
+            {
+                chip.SetChipCheck(false);
+            }
+            CheckGame();
+           
+            Debug.Log(checkCHip.chipPoint.x + " " + checkCHip.chipPoint.y);
         }
-        CheckGame();
-        Debug.Log(checkCHip.chipPoint.x + " " + checkCHip.chipPoint.y);
+
     }
 
     private void CheckGame()
@@ -115,6 +128,12 @@ public class SceneController : MonoBehaviour
             res = CheckGameBoard(checkCHip);
         }
 
+        if(checkCHip.chipPoint.x == exitPoint.x && checkCHip.chipPoint.y == exitPoint.y)
+        {
+            Debug.Log("Win!");
+            isGameEnd = true;
+            chosenChip.ActivateChosenChip(false);
+        }
     }
 
 
@@ -181,11 +200,11 @@ public class SceneController : MonoBehaviour
                 Vector3 pos = new Vector3(col * cellSize.x + gridOffset.x + transform.position.x, row * cellSize.y + gridOffset.y + transform.position.y);
                 Chip chip = Instantiate(originalEmptyCircle) as Chip;
                 chip.SetChipPoint(new Chip.ChipPoint(row, col));
-                chip.controller = this;
+                chip.manager = this;
                 chip.transform.position = pos;
                 chip.transform.parent = transform;
                 chip.isEnterPoint = false;
-              
+
                 if (row == enterPoint.x && col == enterPoint.y)
                 {
                     chip.isEnterPoint = true;
@@ -194,6 +213,13 @@ public class SceneController : MonoBehaviour
 
                 chips[row, col] = chip;
             }
+        }
+
+        foreach (Chip.ChipPoint point in block_point)
+        {
+            chips[point.x, point.y].chip_type = ChipType.BLOCK;
+            chips[point.x, point.y].SetChip(SetChipSpriteByType(ChipType.BLOCK));
+
         }
     }
 
@@ -215,7 +241,6 @@ public class SceneController : MonoBehaviour
         List<ChipType> left_side = new List<ChipType>();
         List<ChipType> right_side = new List<ChipType>();
 
-        bool is_check = false;
 
         switch (currentChip.chip_type)
         {
