@@ -25,10 +25,11 @@ public class Chip : MonoBehaviour
     private SpriteRenderer render;
 
     public ChipPoint chipPoint { get; set; }
-    public BPManager manager { get; set; }
+    public BPManager manager;
     public ChipType chip_type { get; set; }
-    public bool isCheck { get; set; }
+    public bool isCheck { get;  set; }
     public bool isEnterPoint { get; set; }
+
 
     private void Awake()
     {
@@ -42,8 +43,9 @@ public class Chip : MonoBehaviour
         ActivateChosenChip(isEnterPoint);
     }
 
-    public void SetChip(Sprite image)
-    {  
+    public void SetChip(Sprite image,ChipType type)
+    {
+        chip_type = type;
         render.sprite = image;
     }
 

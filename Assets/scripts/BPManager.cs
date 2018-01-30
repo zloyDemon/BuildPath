@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BPManager : MonoBehaviour
 {
@@ -74,16 +75,17 @@ public class BPManager : MonoBehaviour
 
     private Chip[,] chips;
 
+    private GameTimer gameTimer;
+
+
     void Start()
     {
-        //enterPoint.x = rows - 1;
-        //enterPoint.y = 0;
-
         isGameEnd = false;
+        gameTimer = GetComponent<GameTimer>();
+        gameTimer.StartTime();
         chips = new Chip[rows, cols];
         BuildChipGrid();
     }
-
 
 
     public void ChooseChip(Chip chosen)
@@ -103,8 +105,7 @@ public class BPManager : MonoBehaviour
     {
         if (!isGameEnd)
         {
-            chosenChip.chip_type = type;
-            chosenChip.SetChip(SetChipSpriteByType(type));
+            chosenChip.SetChip(SetChipSpriteByType(type),type);
 
             foreach (Chip chip in chips)
             {
@@ -217,9 +218,7 @@ public class BPManager : MonoBehaviour
 
         foreach (Chip.ChipPoint point in block_point)
         {
-            chips[point.x, point.y].chip_type = ChipType.BLOCK;
-            chips[point.x, point.y].SetChip(SetChipSpriteByType(ChipType.BLOCK));
-
+            chips[point.x, point.y].SetChip(SetChipSpriteByType(ChipType.BLOCK), ChipType.BLOCK);
         }
     }
 
