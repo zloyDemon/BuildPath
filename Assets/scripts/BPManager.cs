@@ -82,6 +82,7 @@ public class BPManager : MonoBehaviour
     {
         isGameEnd = false;
         gameTimer = GetComponent<GameTimer>();
+        gameTimer.manager = this;
         gameTimer.StartTime();
         chips = new Chip[rows, cols];
         BuildChipGrid();
@@ -118,6 +119,13 @@ public class BPManager : MonoBehaviour
 
     }
 
+    public void EndGame()
+    {
+        isGameEnd = true;
+        chosenChip.ActivateChosenChip(false);
+        Debug.Log("End Game");        
+    }
+
     private void CheckGame()
     {
         checkCHip = chips[enterPoint.x, enterPoint.y];
@@ -132,8 +140,8 @@ public class BPManager : MonoBehaviour
         if(checkCHip.chipPoint.x == exitPoint.x && checkCHip.chipPoint.y == exitPoint.y)
         {
             Debug.Log("Win!");
-            isGameEnd = true;
-            chosenChip.ActivateChosenChip(false);
+            EndGame();
+            
         }
     }
 

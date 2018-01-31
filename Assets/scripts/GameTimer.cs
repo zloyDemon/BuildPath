@@ -10,7 +10,8 @@ public class GameTimer : MonoBehaviour {
 
 
     public float start_seconds;
-    public bool isTimerWork = false;
+    public bool isTimerWork { get; private set; }
+    public BPManager manager { get; set; }
 
     public void StartTime()
     {
@@ -50,6 +51,7 @@ public class GameTimer : MonoBehaviour {
             {
                 isTimerWork = false;
                 Debug.Log("isDone!");
+                manager.EndGame();
                 yield return null;
             }
         }
