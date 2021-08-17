@@ -6,41 +6,11 @@ using Random = System.Random;
 
 public class BPManager : MonoBehaviour
 {
-    [SerializeField]
-    private Sprite horizontal;
-
-    [SerializeField]
-    private Sprite vertical;
-
-    [SerializeField]
-    private Sprite up_right;
-
-    [SerializeField]
-    private Sprite right_down;
-
-    [SerializeField]
-    private Sprite left_down;
-
-    [SerializeField]
-    private Sprite left_up;
-
-    [SerializeField]
-    private Sprite empty;
-
-    [SerializeField]
-    public Sprite block;
-
-    [SerializeField]
-    private Chip originalEmptyChip;
-
-    [SerializeField]
-    private Vector2 gridSize;
-
-    [SerializeField]
-    private Vector2 gridOffset;
-
-    [SerializeField]
-    public Sprite cellSprite;
+    [SerializeField] private Chip originalEmptyChip;
+    [SerializeField] private Vector2 gridSize;
+    [SerializeField] private Vector2 gridOffset;
+    [SerializeField] public Sprite cellSprite;
+    [SerializeField] private SpriteHolder _chipsSpriteHolder;
     
     private Chip currentChosenChip;
     private Vector2 cellSize;
@@ -68,36 +38,7 @@ public class BPManager : MonoBehaviour
 
     public Sprite GetChipSpriteByType(ChipType type)
     {
-        Sprite sprite = null;
-        switch (type)
-        {
-            case ChipType.Horizontal:
-                sprite = horizontal;
-                break;
-            case ChipType.Vertical:
-                sprite = vertical;
-                break;
-            case ChipType.LeftDown:
-                sprite = left_down;
-                break;
-            case ChipType.RightDown:
-                sprite = right_down;
-                break;
-            case ChipType.UpRight:
-                sprite = up_right;
-                break;
-            case ChipType.LeftUp:
-                sprite = left_up;
-                break;
-            case ChipType.Block:
-                sprite = block;
-                break;
-            default:
-                sprite = empty;
-                break;
-        }
-
-        return sprite;
+        return _chipsSpriteHolder.GetSpriteByName(type.ToString());
     }
 
     private void CheckGame()
@@ -120,6 +61,8 @@ public class BPManager : MonoBehaviour
             chip = _chipController.Check(chip);
         }
     }
+    
+    
 
     public void ChoseTypeByControl(ChipType type)
     {

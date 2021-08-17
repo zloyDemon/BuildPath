@@ -15,15 +15,10 @@ public class ControlButtonsContainer : MonoBehaviour
             if (type == ChipType.None || type == ChipType.Block)
                 continue;
 
-            CreateButtonByType((ChipType)value);
+            ChipControlButton newButton = Instantiate(_originalButtonPrefab, _gridLayout.transform);
+            newButton.Init(type);
+            newButton.SetClickListener(OnControlButtonClicked);
         }
-    }
-
-    private void CreateButtonByType(ChipType type)
-    {
-        ChipControlButton newButton = Instantiate(_originalButtonPrefab, _gridLayout.transform);
-        newButton.Init(type);
-        newButton.SetClickListener(OnControlButtonClicked);
     }
 
     private void OnControlButtonClicked(ChipType type)

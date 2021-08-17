@@ -1,6 +1,4 @@
-﻿using System;
-
-public enum ChipType
+﻿public enum ChipType
 {
     None = 0,
     Horizontal = 1,

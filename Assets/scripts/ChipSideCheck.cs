@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ChipSideCheck
 {
-    private Chip _currentChip;
     private Predicate<Chip> _sideClampPredicate;
     private Func<Chip, Chip> _sideChipPoint;
     private List<ChipType> _availableTypesOnSide;
