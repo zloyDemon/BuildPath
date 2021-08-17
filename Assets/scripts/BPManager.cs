@@ -1,24 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using Random = System.Random;
+
 
 public class BPManager : MonoBehaviour
 {
-    enum Side
-    {
-        FIRST_SIDE,
-        SECOND_SIDE
-    }
-
-    private const int MAX_ROW_VALUE = 4;
-    private const int MAX_COLUMN_VALUE = MAX_ROW_VALUE;
-
-
-
-    [SerializeField]
-    private Chip emptySprite;
-
     [SerializeField]
     private Sprite horizontal;
 
@@ -41,16 +28,10 @@ public class BPManager : MonoBehaviour
     private Sprite empty;
 
     [SerializeField]
-    private Sprite block;
+    public Sprite block;
 
     [SerializeField]
-    private Chip originalEmptyCircle;
-
-    [SerializeField]
-    private int rows;
-
-    [SerializeField]
-    private int cols;
+    private Chip originalEmptyChip;
 
     [SerializeField]
     private Vector2 gridSize;
@@ -58,145 +39,123 @@ public class BPManager : MonoBehaviour
     [SerializeField]
     private Vector2 gridOffset;
 
-    public Chip.ChipPoint[] block_point;
-
-    private Chip chosenChip;
-    private Chip checkCHip;
-
-    private bool isGameEnd;
-
+    [SerializeField]
+    public Sprite cellSprite;
+    
+    private Chip currentChosenChip;
     private Vector2 cellSize;
     private Vector2 cellScale;
-
-    public Sprite cellSprite;
-
-    public Chip.ChipPoint enterPoint;
-    public Chip.ChipPoint exitPoint;
-
     private Chip[,] chips;
+    private ChipController _chipController;
+    private Chip _enterPoint;
+    private Chip _exitPoint;
+    
+    public static BPManager Instance { get; private set; }
+    public Chip[,] Chips => chips;
 
-    private GameTimer gameTimer;
 
-
-    void Start()
+    void Awake()
     {
-        isGameEnd = false;
-        gameTimer = GetComponent<GameTimer>();
-        gameTimer.manager = this;
-        gameTimer.StartTime();
-        chips = new Chip[rows, cols];
+        Instance = this;
+        _chipController = new ChipController(this);
         BuildChipGrid();
     }
 
-
-    public void ChooseChip(Chip chosen)
+    private void OnDestroy()
     {
-        if (!isGameEnd)
-        {
-            if (chosenChip != null)
-            {
-                chosenChip.ActivateChosenChip(false);
-            }
-            chosenChip = chosen;
-            chosenChip.ActivateChosenChip(true);
-        }
+        Instance = null;
     }
 
-    public void ClickOnControl(ChipType type)
-    {
-        if (!isGameEnd)
-        {
-            chosenChip.SetChip(SetChipSpriteByType(type),type);
-
-            foreach (Chip chip in chips)
-            {
-                chip.SetChipCheck(false);
-            }
-            CheckGame();
-           
-            Debug.Log(checkCHip.chipPoint.x + " " + checkCHip.chipPoint.y);
-        }
-
-    }
-
-    public void EndGame()
-    {
-        isGameEnd = true;
-        chosenChip.ActivateChosenChip(false);
-        Debug.Log("End Game");        
-    }
-
-    private void CheckGame()
-    {
-        checkCHip = chips[enterPoint.x, enterPoint.y];
-        Chip res = CheckGameBoard(checkCHip);
-        while (res != null)
-        {
-            checkCHip = res;
-            checkCHip.SetChipCheck(true);
-            res = CheckGameBoard(checkCHip);
-        }
-
-        if(checkCHip.chipPoint.x == exitPoint.x && checkCHip.chipPoint.y == exitPoint.y)
-        {
-            Debug.Log("Win!");
-            EndGame();
-            
-        }
-    }
-
-
-
-    private Sprite SetChipSpriteByType(ChipType type)
+    public Sprite GetChipSpriteByType(ChipType type)
     {
         Sprite sprite = null;
         switch (type)
         {
-            case ChipType.HORIZONTAL:
+            case ChipType.Horizontal:
                 sprite = horizontal;
                 break;
-            case ChipType.VERTICAL:
+            case ChipType.Vertical:
                 sprite = vertical;
                 break;
-            case ChipType.LEFT_DOWN:
+            case ChipType.LeftDown:
                 sprite = left_down;
                 break;
-            case ChipType.RIGHT_DOWN:
+            case ChipType.RightDown:
                 sprite = right_down;
                 break;
-            case ChipType.UP_RIGHT:
+            case ChipType.UpRight:
                 sprite = up_right;
                 break;
-            case ChipType.LEFT_UP:
+            case ChipType.LeftUp:
                 sprite = left_up;
                 break;
-            case ChipType.BLOCK:
+            case ChipType.Block:
                 sprite = block;
                 break;
-            case ChipType.EMPTY:
             default:
                 sprite = empty;
                 break;
         }
+
         return sprite;
     }
 
+    private void CheckGame()
+    {
+        Chip chip = GetChipByChipPoint(_enterPoint.ChipPoint);
 
+        if (chip.CurrentChipType == ChipType.Empty)
+            return;
+
+        while (chip != null)
+        {
+            chip.SetChipOnWay(true);
+
+            if (chip == GetChipByChipPoint(_exitPoint.ChipPoint))
+            {
+                Debug.Log("Wiiiin");
+                return;
+            }
+            
+            chip = _chipController.Check(chip);
+        }
+    }
+
+    public void ChoseTypeByControl(ChipType type)
+    {
+        if (currentChosenChip != null)
+        {
+            currentChosenChip.SetChipData(type, GetChipSpriteByType(type));
+            
+            foreach (var chip in chips)
+                chip.SetChipOnWay(false);
+            
+            CheckGame();
+        }
+    }
+
+    public Chip GetChipByChipPoint(ChipPoint point)
+    {
+        return chips[point.y, point.x];
+    }
 
     private void BuildChipGrid()
     {
         cellSize = cellSprite.bounds.size;
 
-        Debug.Log(cellSize);
+        var field = FieldGenerator.GetField();
 
+        int rows = field.GetLength(0);
+        int cols = field.GetLength(1);
+        
         Vector3 newCellSize = new Vector3(gridSize.x / (float)cols, gridSize.y / (float)rows);
-
+        chips = new Chip[rows, cols];
         cellScale.x = newCellSize.x / cellSize.x;
         cellScale.y = newCellSize.y / cellSize.y;
 
         cellSize = newCellSize;
 
-        originalEmptyCircle.transform.localScale = new Vector3(cellScale.x, cellScale.y, 0);
+        //originalEmptyChip.transform.localScale = new Vector3(cellScale.x, cellScale.y, 0);
 
         gridOffset.x = -(gridSize.x / 2) + cellSize.x / 2;
         gridOffset.y = -(gridSize.y / 2) + cellSize.y / 2;
@@ -207,268 +166,44 @@ public class BPManager : MonoBehaviour
             for (int col = 0; col < cols; col++)
             {
                 Vector3 pos = new Vector3(col * cellSize.x + gridOffset.x + transform.position.x, row * cellSize.y + gridOffset.y + transform.position.y);
-                Chip chip = Instantiate(originalEmptyCircle) as Chip;
-                chip.SetChipPoint(new Chip.ChipPoint(row, col));
-                chip.manager = this;
+                Chip chip = Instantiate(originalEmptyChip);
+                chip.Init(new ChipPoint(col, row));
+                chip.SetClickListener(OnChipClicked);
                 chip.transform.position = pos;
                 chip.transform.parent = transform;
-                chip.isEnterPoint = false;
-
-                if (row == enterPoint.x && col == enterPoint.y)
-                {
-                    chip.isEnterPoint = true;
-                    chosenChip = chip;
-                }
-
+                var type = GetTypeById(field[(rows - 1) - row, col]);
+                chip.SetChipData(type, GetChipSpriteByType(type));
                 chips[row, col] = chip;
             }
         }
 
-        foreach (Chip.ChipPoint point in block_point)
+        _enterPoint = chips[UnityEngine.Random.Range(0, rows - 1), 0];
+        _exitPoint = chips[UnityEngine.Random.Range(0, rows - 1), cols - 1];
+        
+        _enterPoint.SetChipColor(Color.red);
+        _exitPoint.SetChipColor(Color.red);
+    }
+
+    private void OnChipClicked(Chip chip)
+    {
+        if (chip.CurrentChipType == ChipType.Block)
+            return;
+        
+        if (currentChosenChip != null)
+            currentChosenChip.SetSelect(false);
+
+        currentChosenChip = chip;
+        currentChosenChip.SetSelect(true);
+    }
+
+    private ChipType GetTypeById(int id)
+    {
+        switch (id)
         {
-            chips[point.x, point.y].SetChip(SetChipSpriteByType(ChipType.BLOCK), ChipType.BLOCK);
+            case 0:
+            case 1: return ChipType.Empty;
+            case 2: return ChipType.Block;
+            default: throw new Exception($"ChipType by id = {id} not found");
         }
     }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.DrawWireCube(transform.position, gridSize);
-    }
-
-    private Chip CheckGameBoard(Chip currentChip)
-    {
-        int x = currentChip.chipPoint.x;
-        int y = currentChip.chipPoint.y;
-
-        Chip left = null;
-        Chip right = null;
-
-        Chip result = null;
-
-        List<ChipType> left_side = new List<ChipType>();
-        List<ChipType> right_side = new List<ChipType>();
-
-
-        switch (currentChip.chip_type)
-        {
-            case ChipType.HORIZONTAL:
-
-                if (y != 0)
-                {
-                    left = chips[x, y - 1];
-                }
-
-                if (y != cols - 1)
-                {
-                    right = chips[x, y + 1];
-                }
-
-                left_side.Add(ChipType.HORIZONTAL);
-                left_side.Add(ChipType.RIGHT_DOWN);
-                left_side.Add(ChipType.UP_RIGHT);
-
-                right_side.Add(ChipType.HORIZONTAL);
-                right_side.Add(ChipType.LEFT_DOWN);
-                right_side.Add(ChipType.LEFT_UP);
-
-                if (right != null && !right.isCheck && right_side.Contains(right.chip_type))
-                {
-                    result = right;
-                }
-
-                else if (left != null && !left.isCheck && left_side.Contains(left.chip_type))
-                {
-                    result = left;
-                }
-
-                left_side.Clear();
-                right_side.Clear();
-                left_side = null;
-                right_side = null;
-                return result;
-
-            case ChipType.VERTICAL:
-
-                if (x != 0)
-                {
-                    left = chips[x - 1, y];
-                }
-
-                if (x != rows - 1)
-                {
-                    right = chips[x + 1, y];
-                }
-
-                left_side.Add(ChipType.UP_RIGHT);
-                left_side.Add(ChipType.LEFT_UP);
-                left_side.Add(ChipType.VERTICAL);
-
-                right_side.Add(ChipType.VERTICAL);
-                right_side.Add(ChipType.RIGHT_DOWN);
-                right_side.Add(ChipType.LEFT_DOWN);
-
-                if (right != null && !right.isCheck && right_side.Contains(right.chip_type))
-                {
-                    result = right;
-                }
-
-                else if (left != null && !left.isCheck && left_side.Contains(left.chip_type))
-                {
-                    result = left;
-                }
-
-                left_side.Clear();
-                right_side.Clear();
-                left_side = null;
-                right_side = null;
-                return result;
-
-            case ChipType.LEFT_DOWN:
-
-                if (y != 0)
-                {
-                    left = chips[x, y - 1];
-                }
-
-                if (x != 0)
-                {
-                    right = chips[x - 1, y];
-                }
-
-                left_side.Add(ChipType.HORIZONTAL);
-                left_side.Add(ChipType.RIGHT_DOWN);
-                left_side.Add(ChipType.UP_RIGHT);
-
-                right_side.Add(ChipType.VERTICAL);
-                right_side.Add(ChipType.UP_RIGHT);
-                right_side.Add(ChipType.LEFT_UP);
-
-                if (right != null && !right.isCheck && right_side.Contains(right.chip_type))
-                {
-                    result = right;
-                }
-
-                else if (left != null && !left.isCheck && left_side.Contains(left.chip_type))
-                {
-                    result = left;
-                }
-
-                left_side.Clear();
-                right_side.Clear();
-                left_side = null;
-                right_side = null;
-                return result;
-
-
-            case ChipType.LEFT_UP:
-
-                if (y != 0)
-                {
-                    left = chips[x, y - 1];
-                }
-
-                if (x != rows - 1)
-                {
-                    right = chips[x + 1, y];
-                }
-
-                left_side.Add(ChipType.UP_RIGHT);
-                left_side.Add(ChipType.HORIZONTAL);
-                left_side.Add(ChipType.RIGHT_DOWN);
-
-                right_side.Add(ChipType.VERTICAL);
-                right_side.Add(ChipType.RIGHT_DOWN);
-                right_side.Add(ChipType.LEFT_DOWN);
-
-                if (right != null && !right.isCheck && right_side.Contains(right.chip_type))
-                {
-                    result = right;
-                }
-
-                else if (left != null && !left.isCheck && left_side.Contains(left.chip_type))
-                {
-                    result = left;
-                }
-
-                left_side.Clear();
-                right_side.Clear();
-                left_side = null;
-                right_side = null;
-                return result;
-
-            case ChipType.UP_RIGHT:
-
-                if (x != rows - 1)
-                {
-                    left = chips[x + 1, y];
-                }
-
-                if (y != cols - 1)
-                {
-                    right = chips[x, y + 1];
-                }
-
-                left_side.Add(ChipType.VERTICAL);
-                left_side.Add(ChipType.RIGHT_DOWN);
-                left_side.Add(ChipType.LEFT_DOWN);
-
-                right_side.Add(ChipType.HORIZONTAL);
-                right_side.Add(ChipType.LEFT_DOWN);
-                right_side.Add(ChipType.LEFT_UP);
-
-                if (right != null && !right.isCheck && right_side.Contains(right.chip_type))
-                {
-                    result = right;
-                }
-
-                else if (left != null && !left.isCheck && left_side.Contains(left.chip_type))
-                {
-                    result = left;
-                }
-
-                left_side.Clear();
-                right_side.Clear();
-                left_side = null;
-                right_side = null;
-                return result;
-
-            case ChipType.RIGHT_DOWN:
-
-                if (x != 0)
-                {
-                    left = chips[x - 1, y];
-                }
-
-                if (y != cols - 1)
-                {
-                    right = chips[x, y + 1];
-                }
-
-                left_side.Add(ChipType.VERTICAL);
-                left_side.Add(ChipType.LEFT_UP);
-                left_side.Add(ChipType.UP_RIGHT);
-
-                right_side.Add(ChipType.HORIZONTAL);
-                right_side.Add(ChipType.LEFT_DOWN);
-                right_side.Add(ChipType.LEFT_UP);
-
-                if (right != null && !right.isCheck && right_side.Contains(right.chip_type))
-                {
-                    result = right;
-                }
-
-                else if (left != null && !left.isCheck && left_side.Contains(left.chip_type))
-                {
-                    result = left;
-                }
-
-                left_side.Clear();
-                right_side.Clear();
-                left_side = null;
-                right_side = null;
-                return result;
-        }
-        return null;
-    }
-
 }

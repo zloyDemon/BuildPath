@@ -12,6 +12,6 @@ public class ControlButton : MonoBehaviour {
 	
     private void OnMouseDown()
     {
-        manager.ClickOnControl(chipType);
+        
     }
 }

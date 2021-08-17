@@ -1,11 +1,22 @@
 fileFormatVersion: 2
 guid: 05c6a620f1ecca64c8af1040905e6428
-timeCreated: 1514807335
-licenseType: Free
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
-  executionOrder: 0
+  defaultReferences:
+  - emptySprite: {instanceID: 0}
+  - horizontal: {instanceID: 0}
+  - vertical: {instanceID: 0}
+  - up_right: {fileID: 21300000, guid: 3a7d7022aede2274b97b45cb9f4201c8, type: 3}
+  - right_down: {instanceID: 0}
+  - left_down: {instanceID: 0}
+  - left_up: {instanceID: 0}
+  - empty: {instanceID: 0}
+  - block: {instanceID: 0}
+  - originalEmptyCircle: {instanceID: 0}
+  - startPoint: {instanceID: 0}
+  - cellSprite: {instanceID: 0}
+  executionOrder: -300
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

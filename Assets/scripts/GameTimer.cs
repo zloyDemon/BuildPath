@@ -51,7 +51,7 @@ public class GameTimer : MonoBehaviour {
             {
                 isTimerWork = false;
                 Debug.Log("isDone!");
-                manager.EndGame();
+            
                 yield return null;
             }
         }

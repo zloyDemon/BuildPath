@@ -1,99 +1,60 @@
-﻿using System.Collections;
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+
 
 public class Chip : MonoBehaviour
 {
-    private const float DEF_CHIP_ALPHA = 1f;
-    private const float N_CHECK_CHIP_ALPHA = 0.5f;
+    [SerializeField] private TextMeshPro _text;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
-    [System.Serializable]
-    public struct ChipPoint
+    private List<ChipType> _supportingChipTypes;
+    
+    private Action<Chip> clickListener;
+
+    public ChipType CurrentChipType { get; set; }
+
+    public ChipPoint ChipPoint { get; private set; }
+    
+    public bool IsOnWay { get; private set; }
+    
+    public void Init(ChipPoint chipPoint)
     {
-        public int x;
-        public int y;
-
-        public ChipPoint(int x, int y)
-        {
-            this.x = x;
-            this.y = y;
-        }
+        ChipPoint = chipPoint;
     }
-
-   
-    private bool isCanClick = true;
-    private SpriteRenderer render;
-
-    public ChipPoint chipPoint { get; set; }
-    public BPManager manager;
-    public ChipType chip_type { get; set; }
-    public bool isCheck { get;  set; }
-    public bool isEnterPoint { get; set; }
-
-
-    private void Awake()
+    
+    public void SetChipData(ChipType chipType, Sprite sprite)
     {
-        chip_type = ChipType.EMPTY;
-        render = GetComponent<SpriteRenderer>() as SpriteRenderer;
+        CurrentChipType = chipType;
+        _text.text = CurrentChipType.ToString();
+        _spriteRenderer.sprite = sprite;
     }
-
-    private void Start()
-    {   
-        isCheck = isEnterPoint;
-        ActivateChosenChip(isEnterPoint);
-    }
-
-    public void SetChip(Sprite image,ChipType type)
+    
+    public void SetClickListener(Action<Chip> clickListener)
     {
-        chip_type = type;
-        render.sprite = image;
+        this.clickListener = clickListener;
     }
-
-    public void SetChipPoint(ChipPoint point)
+    
+    public void SetChipColor(Color color)
     {
-        chipPoint = point;
+        _spriteRenderer.color = color;
     }
 
+    public void SetSelect(bool select)
+    {
+        Color result = select ? Color.gray : IsOnWay ? Color.yellow : Color.white;
+        SetChipColor(result);
+    }
+
+    public void SetChipOnWay(bool isOnWay)
+    {
+        _spriteRenderer.color = isOnWay ? Color.yellow : Color.white;
+        IsOnWay = isOnWay;
+    }
+    
     private void OnMouseDown()
     {
-        OnChipClick();
-    }
-
-    public void ActivateChosenChip(bool active)
-    {
-        float alpha = render.color.a;
-        Color color = render.color;
-        color = active ? Color.red : Color.white;
-        color.a = alpha;
-        render.color = color;
-    }
-
-    private void OnChipClick()
-    {
-        if(chip_type != ChipType.BLOCK)
-        {
-            Debug.Log(chipPoint.x + " " + chipPoint.y + " type " + chip_type + " " + isCheck);
-            manager.ChooseChip(this);
-        }     
-    }
-
-    private Color SetAlpha(float alpha)
-    {
-        if(chip_type!= ChipType.EMPTY)
-        {
-            Color color = render.color;
-            color.a = alpha;
-            return color;
-        }
-        return Color.white;
-    }
-
-    public void SetChipCheck(bool is_check)
-    {
-        if(chip_type != ChipType.EMPTY && chip_type != ChipType.BLOCK && !isEnterPoint)
-        {
-            isCheck = is_check;
-            render.color = SetAlpha(isCheck ? DEF_CHIP_ALPHA : N_CHECK_CHIP_ALPHA);
-        }
+        clickListener?.Invoke(this);
     }
 }
