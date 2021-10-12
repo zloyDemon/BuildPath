@@ -47,7 +47,7 @@ public class ChipController
                         }),
 
                     new ChipSideCheck(
-                        c => c.ChipPoint.x != _bpManager.Chips.GetLength(0) - 1,
+                        c => c.ChipPoint.x != _bpManager.PlayfieldController.Chips.GetLength(0) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x + 1,
                             c.ChipPoint.y)),
                         new List<ChipType>
@@ -74,7 +74,7 @@ public class ChipController
                         }),
 
                     new ChipSideCheck(
-                        c => c.ChipPoint.y != BPManager.Instance.Chips.GetLength(1) - 1,
+                        c => c.ChipPoint.y != BPManager.Instance.PlayfieldController.Chips.GetLength(1) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x,
                             c.ChipPoint.y + 1)),
                         new List<ChipType>
@@ -101,7 +101,7 @@ public class ChipController
                         }),
 
                     new ChipSideCheck(
-                        c => c.ChipPoint.y != BPManager.Instance.Chips.GetLength(1) - 1,
+                        c => c.ChipPoint.y != BPManager.Instance.PlayfieldController.Chips.GetLength(1) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x,
                             c.ChipPoint.y + 1)),
                         new List<ChipType>
@@ -144,7 +144,7 @@ public class ChipController
                 ChipType.UpRight, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.ChipPoint.y != _bpManager.Chips.GetLength(1) - 1,
+                        c => c.ChipPoint.y != _bpManager.PlayfieldController.Chips.GetLength(1) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x,
                             c.ChipPoint.y + 1)),
                         new List<ChipType>
@@ -155,7 +155,7 @@ public class ChipController
                         }),
 
                     new ChipSideCheck(
-                        c => c.ChipPoint.x != _bpManager.Chips.GetLength(0) - 1,
+                        c => c.ChipPoint.x != _bpManager.PlayfieldController.Chips.GetLength(0) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x + 1,
                             c.ChipPoint.y)),
                         new List<ChipType>
@@ -171,7 +171,7 @@ public class ChipController
                 ChipType.RightDown, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.ChipPoint.x !=_bpManager.Chips.GetLength(0) - 1,
+                        c => c.ChipPoint.x !=_bpManager.PlayfieldController.Chips.GetLength(0) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x + 1,
                             c.ChipPoint.y)),
                         new List<ChipType>

@@ -215,6 +215,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &409761708
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 409761709}
+  m_Layer: 0
+  m_Name: lr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &409761709
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409761708}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.6520331, y: 1.1855615, z: 40.143204}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1067097799
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,7 +621,7 @@ GameObject:
   - component: {fileID: 1940467298}
   - component: {fileID: 1940467299}
   m_Layer: 0
-  m_Name: SceneController
+  m_Name: BPManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -623,13 +653,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05c6a620f1ecca64c8af1040905e6428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalEmptyChip: {fileID: 6107691857994292858, guid: 49fb50adf6b899f478c17ea83956648c,
-    type: 3}
-  gridSize: {x: 4, y: 4}
-  gridOffset: {x: 8, y: 0}
-  cellSprite: {fileID: 21300000, guid: 790791f588d4dff4ca6fc994b6702781, type: 3}
   _chipsSpriteHolder: {fileID: 11400000, guid: 8963e0243eac43346896d4e98d8ded2b, type: 2}
-  _playfieldController: {fileID: 0}
+  _playfieldController: {fileID: 1940467299}
   _timerText: {fileID: 2077282158}
 --- !u!114 &1940467299
 MonoBehaviour:
@@ -643,10 +668,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05ba02e6bc6991d4fa204ecf8b790306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize: {x: 0, y: 0}
-  gridOffset: {x: 0, y: 0}
-  cellSprite: {fileID: 0}
-  originalEmptyChip: {fileID: 0}
+  gridSize: {x: 4, y: 4}
+  gridOffset: {x: 8, y: 8}
+  cellSprite: {fileID: 21300000, guid: 790791f588d4dff4ca6fc994b6702781, type: 3}
+  originalEmptyChip: {fileID: 6107691857994292858, guid: 49fb50adf6b899f478c17ea83956648c,
+    type: 3}
 --- !u!1 &2077282156
 GameObject:
   m_ObjectHideFlags: 0

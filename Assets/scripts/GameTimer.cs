@@ -1,59 +1,56 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class GameTimer : MonoBehaviour {
+public class GameTimer 
+{
+    public bool IsTimerWork { get; private set; }
+    public int CurrentSeconds => _seconds;
+    
+    public event Action<int> SecondsChanged; 
+    public event Action TimerEnded; 
 
-    public Text timerText;
+    private int _seconds;
+    private Coroutine _timerCoroutine;
+    private MonoBehaviour _context;
 
-
-    public float start_seconds;
-    public bool isTimerWork { get; private set; }
-    public BPManager manager { get; set; }
-
-    public void StartTime()
+    public void InitTimer(int seconds)
     {
-        start_seconds++;
-        isTimerWork = true;
-        StartCoroutine(Timer());
-        Debug.Log("Maaath " + Mathf.Floor(9.6f));
+        _seconds = seconds;
+        _context = BPManager.Instance;
+        StartTimer();
+    }
+    
+    public void StartTimer()
+    {
+        IsTimerWork = true;
+        _timerCoroutine = _context.StartCoroutine(Timer());
     }
 
-    public void PauseTimer()
+    public void StopTimer()
     {
-        if (isTimerWork)
+        if (_timerCoroutine != null)
         {
-            isTimerWork = false;
-            Debug.Log("Time " + start_seconds);
+            _context.StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
         }
-        else
-        {
-            StartTime();
-        }
+    }
 
+    public void GetMinuteAndSeconds(out int minutes, out int seconds)
+    {
+        minutes = (int)Mathf.Floor(_seconds / 60);
+        seconds = _seconds % 60;
     }
 
     private IEnumerator Timer()
     {     
-        while (isTimerWork)
+        while (_seconds > 0)
         {
-            if (start_seconds > 0)
-            {
-                start_seconds--;
-                float minutes = Mathf.Floor(start_seconds / 60);
-                float seconds = start_seconds % 60;               
-                timerText.text = (minutes.ToString("0") + ":"+ seconds.ToString("00"));
-                yield return new WaitForSeconds(1);
-            }
-            else
-            {
-                isTimerWork = false;
-                Debug.Log("isDone!");
-            
-                yield return null;
-            }
+            _seconds--;
+            SecondsChanged?.Invoke(_seconds);
+            yield return new WaitForSeconds(1);
         }
+        
+        TimerEnded?.Invoke();
     }
 }
