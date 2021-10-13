@@ -1,13 +1,17 @@
 using System.Collections.Generic;
+using Zenject;
 
 public class ChipController
 {
     private Dictionary<ChipType, List<ChipSideCheck>> sideChecks;
+    
+    [Inject]
     private BPManager _bpManager;
 
-    public ChipController(BPManager bpManager)
+    
+    public ChipController(BPManager manager)
     {
-        _bpManager = bpManager;
+        //_bpManager = manager;
         InitSides();
     }
 
@@ -74,7 +78,7 @@ public class ChipController
                         }),
 
                     new ChipSideCheck(
-                        c => c.ChipPoint.y != BPManager.Instance.PlayfieldController.Chips.GetLength(1) - 1,
+                        c => c.ChipPoint.y != _bpManager.PlayfieldController.Chips.GetLength(1) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x,
                             c.ChipPoint.y + 1)),
                         new List<ChipType>
@@ -101,7 +105,7 @@ public class ChipController
                         }),
 
                     new ChipSideCheck(
-                        c => c.ChipPoint.y != BPManager.Instance.PlayfieldController.Chips.GetLength(1) - 1,
+                        c => c.ChipPoint.y != _bpManager.PlayfieldController.Chips.GetLength(1) - 1,
                         c => _bpManager.GetChipByChipPoint(ChipPoint.CreatChipPoint(c.ChipPoint.x,
                             c.ChipPoint.y + 1)),
                         new List<ChipType>

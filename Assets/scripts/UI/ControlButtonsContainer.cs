@@ -1,11 +1,15 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class ControlButtonsContainer : MonoBehaviour
 {
     [SerializeField] private ChipControlButton _originalButtonPrefab;
     [SerializeField] private GridLayoutGroup _gridLayout;
+
+    [Inject] 
+    private BPManager _bpManager;
     
     private void Awake()
     {
@@ -16,13 +20,13 @@ public class ControlButtonsContainer : MonoBehaviour
                 continue;
 
             ChipControlButton newButton = Instantiate(_originalButtonPrefab, _gridLayout.transform);
-            newButton.Init(type);
+            newButton.Init(type, _bpManager.GetChipSpriteByType(type));
             newButton.SetClickListener(OnControlButtonClicked);
         }
     }
 
     private void OnControlButtonClicked(ChipType type)
     {
-        BPManager.Instance.ChoseTypeByControl(type);
+        _bpManager.ChoseTypeByControl(type);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class ChipControlButton : MonoBehaviour
 {
@@ -20,10 +21,10 @@ public class ChipControlButton : MonoBehaviour
         OnControlChipTypeClick = null;
     }
 
-    public void Init(ChipType type)
+    public void Init(ChipType type, Sprite sprite)
     {
         _chipType = type;
-        _chipImg.sprite = BPManager.Instance.GetChipSpriteByType(_chipType);
+        _chipImg.sprite = sprite;
     }
 
     public void SetClickListener(Action<ChipType> clickListener)

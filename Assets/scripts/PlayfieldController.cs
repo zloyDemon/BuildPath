@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public class PlayfieldController : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class PlayfieldController : MonoBehaviour
     [SerializeField] private Vector2 gridOffset;
     [SerializeField] public Sprite cellSprite;
     [SerializeField] private Chip originalEmptyChip;
+
+    [Inject] 
+    private BPManager _bpManager;
     
     private Chip _enterPoint;
     private Chip _exitPoint;
@@ -74,7 +78,7 @@ public class PlayfieldController : MonoBehaviour
                 chip.transform.parent = transform;
                 var id = field[(rows - 1) - row, col];
                 var type = GetTypeById(id);
-                chip.SetChipData(type, BPManager.Instance.GetChipSpriteByType(type));
+                chip.SetChipData(type, _bpManager.GetChipSpriteByType(type));
                 chips[row, col] = chip;
                 
                 if (id == 1)
@@ -88,7 +92,7 @@ public class PlayfieldController : MonoBehaviour
             }
         }
 
-        Sprite sprite = BPManager.Instance.GetChipSpriteByName("enter_exit");
+        Sprite sprite = _bpManager.GetChipSpriteByName("enter_exit");
         GameObject enterPointGO = new GameObject("EnterPointChip");
         GameObject exitPointGo = new GameObject("ExitPointChip");
         enterPointGO.AddComponent<SpriteRenderer>().sprite = sprite;

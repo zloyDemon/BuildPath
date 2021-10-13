@@ -17,7 +17,7 @@ public class GameTimer
     public void InitTimer(int seconds)
     {
         _seconds = seconds;
-        _context = BPManager.Instance;
+        
         StartTimer();
     }
     

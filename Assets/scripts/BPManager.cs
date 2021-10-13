@@ -1,7 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
-
+using Zenject;
 
 public class BPManager : MonoBehaviour
 {
@@ -15,14 +15,12 @@ public class BPManager : MonoBehaviour
     private Vector2 cellScale;
     private ChipController _chipController;
 
-
-    public static BPManager Instance { get; private set; }
     public PlayfieldController PlayfieldController => _playfieldController;
+    public ChipController ChipController => _chipController;
 
 
     void Awake()
     {
-        Instance = this;
         _chipController = new ChipController(this);
         _playfieldController.Init();
         _playfieldController.OnChipClicked += OnChipClicked;
@@ -31,7 +29,6 @@ public class BPManager : MonoBehaviour
     private void OnDestroy()
     {
         _playfieldController.OnChipClicked -= OnChipClicked;
-        Instance = null;
     }
 
     public Sprite GetChipSpriteByType(ChipType type)
