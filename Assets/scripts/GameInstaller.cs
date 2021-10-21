@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -7,7 +8,8 @@ public class GameInstaller : MonoInstaller
     
     public override void InstallBindings()
     {
-        CreateSingletons();
+        // TODO learn more about Zenject
+        // CreateSingletons();
     }
 
     private void CreateSingletons()

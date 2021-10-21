@@ -10,7 +10,7 @@ public class ChipControlButton : MonoBehaviour
 
     private ChipType _chipType;
     private Action<ChipType> OnControlChipTypeClick;
-    
+
     private void Awake()
     {
         _button.onClick.AddListener(OnButtonClick);

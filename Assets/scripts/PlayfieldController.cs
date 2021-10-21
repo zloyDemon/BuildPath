@@ -9,7 +9,6 @@ public class PlayfieldController : MonoBehaviour
     [SerializeField] public Sprite cellSprite;
     [SerializeField] private Chip originalEmptyChip;
 
-    [Inject] 
     private BPManager _bpManager;
     
     private Chip _enterPoint;
@@ -26,6 +25,7 @@ public class PlayfieldController : MonoBehaviour
 
     public void Init()
     {
+        _bpManager = BPManager.Instance;
         BuildChipGrid();
     }
     

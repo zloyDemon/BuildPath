@@ -1,17 +1,15 @@
 using System.Collections.Generic;
+using UnityEngine;
 using Zenject;
 
 public class ChipController
 {
     private Dictionary<ChipType, List<ChipSideCheck>> sideChecks;
-    
-    [Inject]
     private BPManager _bpManager;
-
     
     public ChipController(BPManager manager)
     {
-        //_bpManager = manager;
+        _bpManager = manager;
         InitSides();
     }
 
@@ -30,6 +28,34 @@ public class ChipController
         }
 
         return null;
+    }
+    
+    private void CheckGame()
+    {
+        var playfieldController = _bpManager.PlayfieldController;
+        Chip chip = _bpManager.GetChipByChipPoint(playfieldController.EnterPoint.ChipPoint);
+        
+        if (chip.CurrentChipType == ChipType.Empty)
+            return;
+
+        while (chip != null)
+        {
+            if (chip == playfieldController.EnterPoint || chip == playfieldController.ExitPoint)
+            {
+                if (!playfieldController.EnterOrExitPointHasCorrectType(chip))
+                    return;
+            }
+            
+            chip.SetChipOnWay(true);
+            
+            if (chip == playfieldController.ExitPoint)
+            {
+                Debug.Log("Win");
+                return;
+            }
+            
+            chip = Check(chip);
+        }
     }
 
     private void InitSides()

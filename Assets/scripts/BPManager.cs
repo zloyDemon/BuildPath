@@ -19,8 +19,11 @@ public class BPManager : MonoBehaviour
     public ChipController ChipController => _chipController;
 
 
+    public static BPManager Instance;
+
     void Awake()
     {
+        Instance = this;
         _chipController = new ChipController(this);
         _playfieldController.Init();
         _playfieldController.OnChipClicked += OnChipClicked;
@@ -29,6 +32,7 @@ public class BPManager : MonoBehaviour
     private void OnDestroy()
     {
         _playfieldController.OnChipClicked -= OnChipClicked;
+        Instance = null;
     }
 
     public Sprite GetChipSpriteByType(ChipType type)
