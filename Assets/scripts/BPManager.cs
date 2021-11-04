@@ -1,16 +1,12 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
-using Zenject;
 
 public class BPManager : MonoBehaviour
 {
     [SerializeField] private SpriteHolder _chipsSpriteHolder;
     [SerializeField] private PlayfieldController _playfieldController;
 
-    [SerializeField] private TextMeshProUGUI _timerText;
-    
-    private Chip currentChosenChip;
+    private Chip _currentChosenChip;
     private Vector2 cellSize;
     private Vector2 cellScale;
     private ChipController _chipController;
@@ -47,36 +43,14 @@ public class BPManager : MonoBehaviour
 
     private void CheckGame()
     {
-        Chip chip = GetChipByChipPoint(_playfieldController.EnterPoint.ChipPoint);
-        
-        if (chip.CurrentChipType == ChipType.Empty)
-            return;
-
-        while (chip != null)
-        {
-            if (chip == _playfieldController.EnterPoint || chip == _playfieldController.ExitPoint)
-            {
-                if (!_playfieldController.EnterOrExitPointHasCorrectType(chip))
-                    return;
-            }
-            
-            chip.SetChipOnWay(true);
-            
-            if (chip == _playfieldController.ExitPoint)
-            {
-                Debug.Log("Win");
-                return;
-            }
-            
-            chip = _chipController.Check(chip);
-        }
+        _chipController.CheckGame();
     }
 
     public void ChoseTypeByControl(ChipType type)
     {
-        if (currentChosenChip != null)
+        if (_currentChosenChip != null)
         {
-            currentChosenChip.SetChipData(type, GetChipSpriteByType(type));
+            _currentChosenChip.SetChipData(type, GetChipSpriteByType(type));
             
             foreach (var chip in _playfieldController.Chips)
                 chip.SetChipOnWay(false);
@@ -95,10 +69,10 @@ public class BPManager : MonoBehaviour
         if (chip.CurrentChipType == ChipType.Block)
             return;
         
-        if (currentChosenChip != null)
-            currentChosenChip.SetSelect(false);
+        if (_currentChosenChip != null)
+            _currentChosenChip.SetSelect(false);
 
-        currentChosenChip = chip;
-        currentChosenChip.SetSelect(true);
+        _currentChosenChip = chip;
+        _currentChosenChip.SetSelect(true);
     }
 }

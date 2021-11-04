@@ -43,13 +43,13 @@ public class Chip : MonoBehaviour
 
     public void SetSelect(bool select)
     {
-        Color result = select ? Color.gray : IsOnWay ? Color.yellow : Color.white;
+        Color result = select ? Color.white : IsOnWay ? Color.white : Color.gray;
         SetChipColor(result);
     }
 
     public void SetChipOnWay(bool isOnWay)
     {
-        _spriteRenderer.color = isOnWay ? Color.yellow : Color.white;
+        _spriteRenderer.color = isOnWay ? Color.white : Color.gray;
         IsOnWay = isOnWay;
     }
     

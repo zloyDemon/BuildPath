@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746221c5b53bb4f4db242e6f822db14e, type: 3}
+  m_Name: Chips_1
+  m_EditorClassIdentifier: 
+  sprites:
+  - {fileID: 21300000, guid: f80e327ab9693e14b952b7f4d90ff58b, type: 3}
+  - {fileID: 21300000, guid: 764fd9c13280f9244aedb9e438f27979, type: 3}
+  - {fileID: 21300000, guid: e274195ad9eb0cd43858a99ff875b6d7, type: 3}
+  - {fileID: 21300000, guid: b8683ef9de2b7bd4a84c0bc53c9c7ec5, type: 3}
+  - {fileID: 21300000, guid: 2c66400ea12389b4da496062f5a98409, type: 3}
+  - {fileID: 21300000, guid: a8e727bc58e615a4e8d81aac555f07d3, type: 3}
+  - {fileID: 21300000, guid: aac8475b509d85949a7464e716ae7fd4, type: 3}
+  - {fileID: 21300000, guid: 9362faf9cd42ac845a803fd31321fd2c, type: 3}
+  - {fileID: 21300000, guid: cf874e1261187c94680c3f7ad08ad99c, type: 3}

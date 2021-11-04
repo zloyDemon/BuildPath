@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -6,6 +8,11 @@ public class ChipController
 {
     private Dictionary<ChipType, List<ChipSideCheck>> sideChecks;
     private BPManager _bpManager;
+    private Queue<Chip> rightChips = new Queue<Chip>();
+
+    public IEnumerable<Chip> RightChips => rightChips;
+
+    public event Action OnCheckCompleted;
     
     public ChipController(BPManager manager)
     {
@@ -30,7 +37,7 @@ public class ChipController
         return null;
     }
     
-    private void CheckGame()
+    public void CheckGame()
     {
         var playfieldController = _bpManager.PlayfieldController;
         Chip chip = _bpManager.GetChipByChipPoint(playfieldController.EnterPoint.ChipPoint);
@@ -38,8 +45,11 @@ public class ChipController
         if (chip.CurrentChipType == ChipType.Empty)
             return;
 
+        rightChips.Clear();
+        
         while (chip != null)
         {
+            if (chip) rightChips.Enqueue(chip);
             if (chip == playfieldController.EnterPoint || chip == playfieldController.ExitPoint)
             {
                 if (!playfieldController.EnterOrExitPointHasCorrectType(chip))
@@ -50,12 +60,17 @@ public class ChipController
             
             if (chip == playfieldController.ExitPoint)
             {
+                
                 Debug.Log("Win");
+                OnCheckCompleted?.Invoke();
                 return;
             }
             
             chip = Check(chip);
+            
         }
+        
+        OnCheckCompleted?.Invoke();
     }
 
     private void InitSides()

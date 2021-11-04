@@ -4,10 +4,13 @@ using Zenject;
 
 public class PlayfieldController : MonoBehaviour
 {
+    private const float EdgePointsOffset = 1.6f;
+    
     [SerializeField] private Vector2 gridSize;
     [SerializeField] private Vector2 gridOffset;
     [SerializeField] public Sprite cellSprite;
     [SerializeField] private Chip originalEmptyChip;
+    [SerializeField] private SpriteRenderer edgePoint;
 
     private BPManager _bpManager;
     
@@ -71,16 +74,17 @@ public class PlayfieldController : MonoBehaviour
             for (int col = 0; col < cols; col++)
             {
                 Vector3 pos = new Vector3(col * cellSize.x + gridOffset.x + transform.position.x, row * cellSize.y + gridOffset.y + transform.position.y);
-                Chip chip = Instantiate(originalEmptyChip);
+                Chip chip = Instantiate(originalEmptyChip, transform, true);
                 chip.Init(new ChipPoint(col, row));
                 chip.SetClickListener(OnChipClick);
                 chip.transform.position = pos;
-                chip.transform.parent = transform;
+                chip.SetChipColor(Color.gray);
                 var id = field[(rows - 1) - row, col];
                 var type = GetTypeById(id);
                 chip.SetChipData(type, _bpManager.GetChipSpriteByType(type));
                 chips[row, col] = chip;
                 
+                // Todo
                 if (id == 1)
                 {
                     _enterPoint = chip;
@@ -92,17 +96,14 @@ public class PlayfieldController : MonoBehaviour
             }
         }
 
-        Sprite sprite = _bpManager.GetChipSpriteByName("enter_exit");
-        GameObject enterPointGO = new GameObject("EnterPointChip");
-        GameObject exitPointGo = new GameObject("ExitPointChip");
-        enterPointGO.AddComponent<SpriteRenderer>().sprite = sprite;
-        exitPointGo.AddComponent<SpriteRenderer>().sprite = sprite;
-        enterPointGO.transform.SetParent(_enterPoint.transform);
-        exitPointGo.transform.SetParent(_exitPoint.transform);
-        enterPointGO.transform.localPosition = Vector3.zero;
-        exitPointGo.transform.localPosition = Vector3.zero;
-        enterPointGO.transform.localScale = Vector3.one;
-        exitPointGo.transform.localScale = Vector3.one;
+        var enterPoint = Instantiate(edgePoint);
+        var exitPoint = Instantiate(edgePoint);
+        
+        enterPoint.transform.position = _enterPoint.transform.position + (Vector3.left * EdgePointsOffset);
+        exitPoint.transform.position = _exitPoint.transform.position + (Vector3.right * EdgePointsOffset);
+        var newScale = exitPoint.transform.localScale;
+        newScale.x *= -1;
+        exitPoint.transform.localScale = newScale;
     }
 
     private void OnChipClick(Chip chip)

@@ -10,7 +10,6 @@ public class SpriteHolder : ScriptableObject
 
     public Sprite GetSpriteByName(string name)
     {
-        name = name.ToLower();
         return sprites.FirstOrDefault(e => string.Equals(e.name, name));
     }
 }
