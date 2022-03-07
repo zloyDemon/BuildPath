@@ -10,13 +10,10 @@ public class Chip : MonoBehaviour
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
     private List<ChipType> _supportingChipTypes;
-    
     private Action<Chip> clickListener;
-
-    public ChipType CurrentChipType { get; set; }
-
-    public ChipPoint ChipPoint { get; private set; }
     
+    public ChipType CurrentChipType { get; set; }
+    public ChipPoint ChipPoint { get; private set; }
     public bool IsOnWay { get; private set; }
     
     public void Init(ChipPoint chipPoint)
@@ -43,13 +40,12 @@ public class Chip : MonoBehaviour
 
     public void SetSelect(bool select)
     {
-        Color result = select ? Color.white : IsOnWay ? Color.white : Color.gray;
-        SetChipColor(result);
+        transform.localScale += Vector3.one * (select ? 0.1f : -0.1f);
     }
 
     public void SetChipOnWay(bool isOnWay)
     {
-        _spriteRenderer.color = isOnWay ? Color.white : Color.gray;
+        SetChipColor(isOnWay ? Color.white : Color.gray);
         IsOnWay = isOnWay;
     }
     

@@ -8,11 +8,11 @@ public class ControlButtonsContainer : MonoBehaviour
     [SerializeField] private ChipControlButton _originalButtonPrefab;
     [SerializeField] private GridLayoutGroup _gridLayout;
 
-    private BPManager _bpManager;
+    private GameProcessManager gameProcessManager;
     
     private void Awake()
     {
-        _bpManager = BPManager.Instance;
+        gameProcessManager = GameProcessManager.Instance;
         foreach (var value in Enum.GetValues(typeof(ChipType)))
         {
             var type = (ChipType) value;
@@ -20,13 +20,13 @@ public class ControlButtonsContainer : MonoBehaviour
                 continue;
             
             ChipControlButton newButton = Instantiate(_originalButtonPrefab, _gridLayout.transform);
-            newButton.Init(type, _bpManager.GetChipSpriteByType(type));
+            newButton.Init(type, gameProcessManager.PlayfieldController.GetChipSpriteByType(type));
             newButton.SetClickListener(OnControlButtonClicked);
         }
     }
 
     private void OnControlButtonClicked(ChipType type)
     {
-        _bpManager.ChoseTypeByControl(type);
+        gameProcessManager.PlayfieldController.ChoseTypeByControl(type);
     }
 }

@@ -9,11 +9,11 @@ public class LineController : MonoBehaviour
 
     [SerializeField] private Transform p1;
     [SerializeField] private Transform p2;
-    [SerializeField] private float width = 0.1f;
+    [SerializeField] private float width = 0.01f;
     
     private void Awake()
     {
-        BPManager.Instance.ChipController.OnCheckCompleted += ChipControllerOnOnCheckCompleted;
+        GameProcessManager.Instance.PlayfieldController.OnCheckCompleted += ChipControllerOnOnCheckCompleted;
         energyPath.startWidth = width;
         energyPath.endWidth = width;
         energyPath.widthMultiplier = width;
@@ -21,18 +21,20 @@ public class LineController : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (BPManager.Instance == null) return;
-        BPManager.Instance.ChipController.OnCheckCompleted += ChipControllerOnOnCheckCompleted;
+        if (GameProcessManager.Instance == null) 
+            return;
+        
+        GameProcessManager.Instance.PlayfieldController.OnCheckCompleted += ChipControllerOnOnCheckCompleted;
     }
 
     private void ChipControllerOnOnCheckCompleted()
     {
-        var rightChips = BPManager.Instance.ChipController.RightChips;
-        energyPath.positionCount = BPManager.Instance.ChipController.RightChips.Count() + 1;
+        var rightChips = GameProcessManager.Instance.PlayfieldController.RightChips;
+        energyPath.positionCount = GameProcessManager.Instance.PlayfieldController.RightChips.Count() + 1;
         int position = 0;
 
-        var enterPoint = BPManager.Instance.PlayfieldController.EnterPoint;
-        var exitPoint = BPManager.Instance.PlayfieldController.ExitPoint;
+        var enterPoint = GameProcessManager.Instance.PlayfieldController.EnterPoint;
+        var exitPoint = GameProcessManager.Instance.PlayfieldController.ExitPoint;
 
         foreach (var rightChip in rightChips)
         {
