@@ -1,4 +1,5 @@
 using System;
+using Enum;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -13,10 +14,10 @@ public class ControlButtonsContainer : MonoBehaviour
     private void Awake()
     {
         gameProcessManager = GameProcessManager.Instance;
-        foreach (var value in Enum.GetValues(typeof(ChipType)))
+        foreach (var value in System.Enum.GetValues(typeof(CellType)))
         {
-            var type = (ChipType) value;
-            if (type == ChipType.None || type == ChipType.Block)
+            var type = (CellType) value;
+            if (type == CellType.None || type == CellType.Block)
                 continue;
             
             ChipControlButton newButton = Instantiate(_originalButtonPrefab, _gridLayout.transform);
@@ -25,7 +26,7 @@ public class ControlButtonsContainer : MonoBehaviour
         }
     }
 
-    private void OnControlButtonClicked(ChipType type)
+    private void OnControlButtonClicked(CellType type)
     {
         gameProcessManager.PlayfieldController.ChoseTypeByControl(type);
     }

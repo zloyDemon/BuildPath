@@ -5,7 +5,6 @@ public class GameProcessManager : MonoBehaviour
 {
     
     [SerializeField] private PlayfieldController _playfieldController;
-
     
     private Vector2 cellSize;
     private Vector2 cellScale;

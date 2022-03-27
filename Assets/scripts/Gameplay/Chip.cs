@@ -1,31 +1,34 @@
 using System;
 using System.Collections.Generic;
+using Enum;
 using TMPro;
 using UnityEngine;
 
 
 public class Chip : MonoBehaviour
 {
-    [SerializeField] private TextMeshPro _text;
-    [SerializeField] private SpriteRenderer _spriteRenderer;
-
-    private List<ChipType> _supportingChipTypes;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private Vector2 p;
     private Action<Chip> clickListener;
+    public CellType CellType { get; set; }
+    public CellPoint CellPoint { get; set; }
+    public bool IsOnWay { get; set; }
     
-    public ChipType CurrentChipType { get; set; }
-    public ChipPoint ChipPoint { get; private set; }
-    public bool IsOnWay { get; private set; }
-    
-    public void Init(ChipPoint chipPoint)
+    public void Init(CellPoint cellPoint)
     {
-        ChipPoint = chipPoint;
+        CellPoint = cellPoint;
+        SetP();
+    }
+
+    public void SetP()
+    {
+        p = new Vector2(CellPoint.x, CellPoint.y);
     }
     
-    public void SetChipData(ChipType chipType, Sprite sprite)
+    public virtual void SetChipData(CellType cellType, Sprite sprite)
     {
-        CurrentChipType = chipType;
-        _text.text = CurrentChipType.ToString();
-        _spriteRenderer.sprite = sprite;
+        CellType = cellType;
+        spriteRenderer.sprite = sprite;
     }
     
     public void SetClickListener(Action<Chip> clickListener)
@@ -35,15 +38,15 @@ public class Chip : MonoBehaviour
     
     public void SetChipColor(Color color)
     {
-        _spriteRenderer.color = color;
+        spriteRenderer.color = color;
     }
 
     public void SetSelect(bool select)
     {
-        transform.localScale += Vector3.one * (select ? 0.1f : -0.1f);
+        SetChipColor(select ? Color.white : Color.grey);
     }
 
-    public void SetChipOnWay(bool isOnWay)
+    public virtual void SetChipOnWay(bool isOnWay)
     {
         SetChipColor(isOnWay ? Color.white : Color.gray);
         IsOnWay = isOnWay;

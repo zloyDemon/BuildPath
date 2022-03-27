@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using UnityEngine;
 
@@ -57,6 +56,4 @@ public class LineController : MonoBehaviour
         energyPath.endWidth = width;
         energyPath.widthMultiplier = width;
     }
-
-
 }

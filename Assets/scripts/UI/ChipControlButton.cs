@@ -1,4 +1,5 @@
 using System;
+using Enum;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -8,8 +9,8 @@ public class ChipControlButton : MonoBehaviour
     [SerializeField] private Image _chipImg;
     [SerializeField] private Button _button;
 
-    private ChipType _chipType;
-    private Action<ChipType> OnControlChipTypeClick;
+    private CellType cellType;
+    private Action<CellType> OnControlChipTypeClick;
 
     private void Awake()
     {
@@ -21,19 +22,19 @@ public class ChipControlButton : MonoBehaviour
         OnControlChipTypeClick = null;
     }
 
-    public void Init(ChipType type, Sprite sprite)
+    public void Init(CellType type, Sprite sprite)
     {
-        _chipType = type;
+        cellType = type;
         _chipImg.sprite = sprite;
     }
 
-    public void SetClickListener(Action<ChipType> clickListener)
+    public void SetClickListener(Action<CellType> clickListener)
     {
         OnControlChipTypeClick = clickListener;
     }
 
     private void OnButtonClick()
     {
-        OnControlChipTypeClick?.Invoke(_chipType);
+        OnControlChipTypeClick?.Invoke(cellType);
     }
 }

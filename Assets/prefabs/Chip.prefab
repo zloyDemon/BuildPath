@@ -45,7 +45,6 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -124,8 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea87515818b3ebe45b06579c0e6b0f19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _text: {fileID: 6619691424329454835}
-  _spriteRenderer: {fileID: 212386240399572128}
+  spriteRenderer: {fileID: 212386240399572128}
 --- !u!1 &391972563393193815
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,7 +172,6 @@ MeshRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -291,9 +288,9 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  _SortingLayer: 0
-  _SortingLayerID: 0
-  _SortingOrder: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 161591784638477136}
   m_maskType: 0
+  _SortingLayer: 0
+  _SortingLayerID: 0
+  _SortingOrder: 0
