@@ -43,7 +43,8 @@ public class Chip : MonoBehaviour
 
     public void SetSelect(bool select)
     {
-        SetChipColor(select ? Color.white : Color.grey);
+        //SetChipColor(select ? Color.white : Color.grey);
+        transform.localScale = Vector3.one * (select ? 0.6f : 0.5f);
     }
 
     public virtual void SetChipOnWay(bool isOnWay)

@@ -225,23 +225,18 @@ public class LevelEditor : MonoBehaviour
         int step = 0;
         cells_array = null;
         cells_array = new LevelEditorCell[xSize, ySize];
-        string str = "";
-        for (int i = 0; i < xSize; i++)
+        
+        for (int i = 0; i < ySize; i++)
         {
-            for (int j = 0; j < ySize; j++)
+            for (int j = 0; j < xSize; j++)
             {
-                cells[step].CellPoint = CellPoint.CreatChipPoint(j, (ySize - 1) - i);
+                cells[step].CellPoint = CellPoint.CreatChipPoint(j, i);
                 cells[step].SetP();
                 cells[step].IsOnWay = false;
-                cells_array[i, j] = cells[step];
+                cells_array[j, i] = cells[step];
                 step++;
                 step = Mathf.Clamp(step, 0, cells.Count - 1);
-                str += cells_array[i,j].name +":";
             }
-
-            str += "\n";
         }
-        
-        Debug.LogError(str);
     }
 }

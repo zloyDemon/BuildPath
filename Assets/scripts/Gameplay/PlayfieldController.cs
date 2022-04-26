@@ -90,16 +90,17 @@ public class PlayfieldController : MonoBehaviour
         {
             for (int col = 0; col < cols; col++)
             {
-                Vector3 pos = new Vector3(col * cellSize.x + gridOffset.x + transform.position.x, row * cellSize.y + gridOffset.y + transform.position.y);
+                Vector3 pos = new Vector3(col * cellSize.x + gridOffset.x + transform.position.x, -(row * cellSize.y + gridOffset.y - transform.position.y));
                 Chip chip = Instantiate(originalEmptyChip, transform, true);
+                chip.gameObject.name = $"{chip.gameObject.name}_{col}_{row}"; 
                 chip.Init(new CellPoint(col, row));
                 chip.SetClickListener(OnChipClick);
                 chip.transform.position = pos;
                 chip.SetChipColor(Color.gray);
-                var id = field[(rows - 1) - row, col];
+                var id = field[row, col];
                 var type = GetTypeById(id);
                 chip.SetChipData(type, GetChipSpriteByType(type));
-                chips[row, col] = chip;
+                chips[col, row] = chip;
                 
                 // Todo
                 if (id == 1)
@@ -147,5 +148,10 @@ public class PlayfieldController : MonoBehaviour
             case 2: return CellType.Block;
             default: throw new Exception($"ChipType by id = {id} not found");
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(transform.position, gridSize);
     }
 }
