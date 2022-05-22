@@ -11,6 +11,8 @@ public class LevelEditorCell : Chip
     private Action<LevelEditorCell> onCellClicked;
     private Image image;
     public RectTransform RectTransform => (RectTransform) transform;
+    public int Index { get; set; }
+    
     
     private void Awake()
     {

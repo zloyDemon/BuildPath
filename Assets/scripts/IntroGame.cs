@@ -14,7 +14,7 @@ public class IntroGame : MonoBehaviour
         var operation = SceneManager.LoadSceneAsync(1);
         while (!operation.isDone)
         {
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
     }
 }

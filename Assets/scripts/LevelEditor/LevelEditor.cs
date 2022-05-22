@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Enum;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -84,6 +86,7 @@ public class LevelEditor : MonoBehaviour
         TransformListToDoubleArray();
         cellsController.SetCells(cells_array, currentEnterPoint, currentExitPoint);
         cellsController.CheckGame();
+        SaveField();
     }
 
     private void OnEnterPointDragging(PointerEventData data)
@@ -238,5 +241,39 @@ public class LevelEditor : MonoBehaviour
                 step = Mathf.Clamp(step, 0, cells.Count - 1);
             }
         }
+    }
+
+    private void SaveField()
+    {
+        var rightCells = new Dictionary<int, int>();
+        foreach (var levelEditorCell in cells)
+        {
+            var cellId = (int)levelEditorCell.CellType;
+            if (!rightCells.ContainsKey(cellId))
+                rightCells.Add(cellId, 0);
+            rightCells[cellId]++;
+        }
+
+        var s = JsonConvert.SerializeObject(rightCells);
+        Debug.LogError(s);
+        var d = JsonConvert.DeserializeObject<Dictionary<int, int>>(s);
+
+        string jsonstr;
+
+        int[] fields = new int[cells.Count];
+        
+        for (var i = 0; i < cells.Count; i++)
+        {
+            fields[i] = (int)cells[i].CellType;
+        }
+
+        int enterPointIndex = cells.IndexOf(currentEnterPoint);
+        int exitPointIndex = cells.IndexOf(currentExitPoint);
+        
+        FileLevelDataModel model = new FileLevelDataModel(0, enterPointIndex, exitPointIndex, fields, rightCells);
+        jsonstr = JsonConvert.SerializeObject(model);
+        Debug.LogError(jsonstr);
+
+
     }
 }
