@@ -22,9 +22,9 @@ public class LevelEditor : MonoBehaviour
     [SerializeField] private DraggableElement enterPointDraggable;
     [SerializeField] private DraggableElement exitPointDraggable;
     [SerializeField] private Button saveButton;
+    [SerializeField] private LevelDataListView levelDataListView;
 
-    private List<LevelEditorCell> cells = new List<LevelEditorCell>();
-    private LevelEditorCell[,] cells_array;
+    private LevelEditorCell[,] cells = default;
     private List<LevelEditorCell> cellsPool = new List<LevelEditorCell>();
     private List<LevelEditorCell> leftSideCells = new List<LevelEditorCell>();
     private List<LevelEditorCell> rightSideCells = new List<LevelEditorCell>();
@@ -34,14 +34,17 @@ public class LevelEditor : MonoBehaviour
     private CellsController cellsController;
     private int xSize;
     private int ySize;
-    
 
+    private CellType[,] CurrentField => levelDataListView.CurrentListItem.LevelData.Field;
+    
     private void Awake()
     {
         xSizeInput.text = "1";
         ySizeInput.text = "1";
 
         cellsController = new CellsController();
+        
+        levelDataListView.InitList();
         
         for (int i = 0; i < cellPool.childCount; i++)
         {
@@ -61,6 +64,7 @@ public class LevelEditor : MonoBehaviour
         enterPointDraggable.OnDragging += OnEnterPointDragging;
         exitPointDraggable.OnDragging += OnExitPointDragging;
         cellsController.OnCheckCompleted += CellsControllerOnOnCheckCompleted;
+        levelDataListView.OnItemSelected += OnLevelDataListItemSelected;
         
         BuildField(1,1);
     }
@@ -70,6 +74,7 @@ public class LevelEditor : MonoBehaviour
         enterPointDraggable.OnDragging -= OnEnterPointDragging;
         exitPointDraggable.OnDragging -= OnExitPointDragging;
         cellsController.OnCheckCompleted -= CellsControllerOnOnCheckCompleted;
+        levelDataListView.OnItemSelected += OnLevelDataListItemSelected;
     }
 
     private void OnControlCellClicked(CellType type)
@@ -81,10 +86,14 @@ public class LevelEditor : MonoBehaviour
         currentSelectedCell.SetChipData(type, sprite);
     }
 
+    private void OnLevelDataListItemSelected(ListLevelItem item)
+    {
+        BindFiled(item.LevelData);
+    }
+    
     private void OnSaveButtonClick()
     {
-        TransformListToDoubleArray();
-        cellsController.SetCells(cells_array, currentEnterPoint, currentExitPoint);
+        cellsController.SetCells(cells, currentEnterPoint, currentExitPoint);
         cellsController.CheckGame();
         SaveField();
     }
@@ -92,11 +101,13 @@ public class LevelEditor : MonoBehaviour
     private void OnEnterPointDragging(PointerEventData data)
     {
         ChooseSideCell(data, ref currentEnterPoint, enterPointDraggable ,leftSideCells, Vector3.left);
+        levelDataListView.CurrentListItem.LevelData.EnterPointIndex = currentEnterPoint.CellPoint.y;
     }
 
     private void OnExitPointDragging(PointerEventData data)
     {
         ChooseSideCell(data, ref currentExitPoint, exitPointDraggable, rightSideCells, Vector3.right);
+        levelDataListView.CurrentListItem.LevelData.ExitPointIndex = currentExitPoint.CellPoint.y;
     }
 
     private void SetEdgeCell(ref LevelEditorCell currentCell, LevelEditorCell cellFrom, DraggableElement sideMarkElement, Vector3 direction)
@@ -125,12 +136,6 @@ public class LevelEditor : MonoBehaviour
     private void CellsControllerOnOnCheckCompleted(CellsController.CheckStatus status)
     {
         Debug.Log($"Status check {status}");
-    }
-    
-    private void WriteToFile()
-    {
-        File.WriteAllText("Assets/Resources/test.txt", "Test");
-        var t = File.ReadAllText("Assets/Resources/test.txt");
     }
 
     private void OnCellClick(LevelEditorCell cell)
@@ -167,50 +172,50 @@ public class LevelEditor : MonoBehaviour
         var newSizeX = gridRectTransform.sizeDelta.x * cellsXCount + Mathf.Clamp(gridLayout.spacing.x * (cellsXCount - 1), 0, 100);
         var newSizeY = gridRectTransform.sizeDelta.y * cellsYCount + Mathf.Clamp(gridLayout.spacing.y * (cellsYCount - 1), 0, 100);
 
-        foreach (var cell in cells)
+        if (cells != null)
         {
-            cell.gameObject.SetActive(false);
-            cell.transform.SetParent(cellPool);
-            cellsPool.Add(cell);
+            foreach (var cell in cells)
+            {
+                cell.gameObject.SetActive(false);
+                cell.gameObject.name = "cell_in_pool";
+                cell.transform.SetParent(cellPool);
+                cellsPool.Add(cell);
+            }
         }
-        
-        cells.Clear();
 
         var needCellsCount = cellsXCount * cellsYCount;
+        
+        cells = new LevelEditorCell[cellsXCount, cellsYCount];
 
         for (int i = 0; i < xSize; i++)
         {
             for (int j = 0; j < ySize; j++)
             {
-                //cells_array[i,j] = 
+                var cellFromPool = cellsPool.First();
+                cellFromPool.gameObject.SetActive(true);
+                cellFromPool.transform.SetParent(gridLayout.transform);
+                cellFromPool.CellPoint = CellPoint.CreatChipPoint(i, j);
+                cellFromPool.gameObject.name = $"cell_{i}_{j}";
+                cells[i, j] = cellFromPool;
+                cellsPool.Remove(cellFromPool);
             }
         }
-        
-        for (int i = 0; i < needCellsCount; i++)
-        {
-            var cellFromPool = cellsPool.First();
-            cellFromPool.gameObject.SetActive(true);
-            cellFromPool.transform.SetParent(gridLayout.transform);
-            cells.Add(cellFromPool);
-            cellsPool.Remove(cellFromPool);
-        }
+        gridRectTransform.sizeDelta = new Vector2(newSizeX, newSizeY);
         
         leftSideCells.Clear();
         rightSideCells.Clear();
         
-        for (int i = 0; i < cells.Count; i += xSize)
+        for (int i = 0; i < cells.GetLength(1); i++)
         {
-            leftSideCells.Add(cells[i]);
+            leftSideCells.Add(cells[i, 0]);
+            cells[i, 0].gameObject.name += $"_left_edge";
         }
         
-        for (int i = xSize - 1; i < needCellsCount; i += (xSize))
+        for (int i = 0; i < cells.GetLength(1); i++)
         {
-            rightSideCells.Add(cells[i]);
+            rightSideCells.Add(cells[i, cells.GetLength(1) - 1]);
+            cells[i, cells.GetLength(1) - 1].gameObject.name += $"_right_edge";
         }
-
-        gridRectTransform.sizeDelta = new Vector2(newSizeX, newSizeY);
-        
-        Canvas.ForceUpdateCanvases();
         
         if (leftSideCells.Count > 0)
         {
@@ -221,59 +226,33 @@ public class LevelEditor : MonoBehaviour
         {
             SetEdgeCell(ref currentExitPoint, rightSideCells.Last(), exitPointDraggable, Vector3.right);
         }
+
+        levelDataListView.CurrentListItem.LevelData.Width = xSize;
+        levelDataListView.CurrentListItem.LevelData.Height = ySize;
     }
 
-    private void TransformListToDoubleArray()
+    private void BindFiled(LevelData levelData)
     {
-        int step = 0;
-        cells_array = null;
-        cells_array = new LevelEditorCell[xSize, ySize];
-        
-        for (int i = 0; i < ySize; i++)
+        BuildField(levelData.Width, levelData.Height);
+
+        for (var i = 0; i < levelData.Field.GetLength(0); i++)
         {
-            for (int j = 0; j < xSize; j++)
+            for (var j = 0; j < levelData.Field.GetLength(1); j++)
             {
-                cells[step].CellPoint = CellPoint.CreatChipPoint(j, i);
-                cells[step].SetP();
-                cells[step].IsOnWay = false;
-                cells_array[j, i] = cells[step];
-                step++;
-                step = Mathf.Clamp(step, 0, cells.Count - 1);
+                var cellType = levelData.Field[i, j];
+                cells[i, j].SetChipData(cellType, cellsSpritesHolder.GetSpriteByName(cellType.ToString()));
             }
         }
     }
 
     private void SaveField()
     {
-        var rightCells = new Dictionary<int, int>();
-        foreach (var levelEditorCell in cells)
+        List<LevelData> dataForSave = new List<LevelData>();
+        foreach (var listLevelItem in levelDataListView.ItemList)
         {
-            var cellId = (int)levelEditorCell.CellType;
-            if (!rightCells.ContainsKey(cellId))
-                rightCells.Add(cellId, 0);
-            rightCells[cellId]++;
+            dataForSave.Add(listLevelItem.LevelData);
         }
-
-        var s = JsonConvert.SerializeObject(rightCells);
-        Debug.LogError(s);
-        var d = JsonConvert.DeserializeObject<Dictionary<int, int>>(s);
-
-        string jsonstr;
-
-        int[] fields = new int[cells.Count];
         
-        for (var i = 0; i < cells.Count; i++)
-        {
-            fields[i] = (int)cells[i].CellType;
-        }
-
-        int enterPointIndex = cells.IndexOf(currentEnterPoint);
-        int exitPointIndex = cells.IndexOf(currentExitPoint);
-        
-        FileLevelDataModel model = new FileLevelDataModel(0, enterPointIndex, exitPointIndex, fields, rightCells);
-        jsonstr = JsonConvert.SerializeObject(model);
-        Debug.LogError(jsonstr);
-
-
+        GameFileUtils.SaveListLevelDataArray(dataForSave);
     }
 }

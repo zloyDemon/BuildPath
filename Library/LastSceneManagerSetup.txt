@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/scene/developer_scene.unity
+- path: Assets/Scene/level_editor.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

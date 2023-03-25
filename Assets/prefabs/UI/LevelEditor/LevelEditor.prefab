@@ -6051,6 +6051,7 @@ MonoBehaviour:
   enterPointDraggable: {fileID: 0}
   exitPointDraggable: {fileID: 0}
   saveButton: {fileID: 6068384554199874936}
+  listLevelsData: {fileID: 170554593245987293}
 --- !u!1 &8483552733126926226
 GameObject:
   m_ObjectHideFlags: 0
@@ -9638,7 +9639,7 @@ PrefabInstance:
     - target: {fileID: 3647255047638770543, guid: f47b291ac89bcbb4ba3b813fbd52cb86,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 180.66669
+      value: 303.99985
       objectReference: {fileID: 0}
     - target: {fileID: 3930973083130081260, guid: f47b291ac89bcbb4ba3b813fbd52cb86,
         type: 3}
@@ -9828,3 +9829,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1516371776471821405}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &170554593245987293 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1681762850780671360, guid: f47b291ac89bcbb4ba3b813fbd52cb86,
+    type: 3}
+  m_PrefabInstance: {fileID: 1516371776471821405}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6d6424a39781974a905c762cedc8c67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

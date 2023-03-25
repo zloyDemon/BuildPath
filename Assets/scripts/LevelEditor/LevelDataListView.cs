@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ListLevelsData : MonoBehaviour
+public class LevelDataListView : MonoBehaviour
 {
     [SerializeField] private ListLevelItem originalListItemPrefab;
     [SerializeField] private Button addListItemButton;
@@ -9,17 +11,35 @@ public class ListLevelsData : MonoBehaviour
     [SerializeField] private RectTransform content;
 
     private ListLevelItem currentListItem;
-    
-    
+    private List<ListLevelItem> itemList = new List<ListLevelItem>();
+
+    public IEnumerable<ListLevelItem> ItemList => itemList;
+    public ListLevelItem CurrentListItem => currentListItem;
+
+    public event Action<ListLevelItem> OnItemSelected;
+
     private void Awake()
     {
         addListItemButton.onClick.AddListener(AddItem);
         removeListItemButton.onClick.AddListener(RemoveItem);
     }
 
+    public void UpdateLevelData(LevelDataSerialize data)
+    {
+        //currentListItem.LevelData = data;
+    }
+
+    public void InitList()
+    {
+        AddItem();
+    }
+
     private void AddItem()
     {
         var listItem = Instantiate(originalListItemPrefab, content, true);
+        LevelData levelDataSerialize = new LevelData();
+        listItem.LevelData = levelDataSerialize;
+        itemList.Add(listItem);
         listItem.OnItemClick += OnItemClick;
         ChangeCurrentItem(listItem);
     }
@@ -29,6 +49,7 @@ public class ListLevelsData : MonoBehaviour
         if (currentListItem != null)
         {
             currentListItem.OnItemClick -= OnItemClick;
+            itemList.Remove(currentListItem);
             Destroy(currentListItem.gameObject);    
         }
     }
@@ -47,5 +68,6 @@ public class ListLevelsData : MonoBehaviour
         
         currentListItem = item;
         currentListItem.SelectListItem();
+        OnItemSelected?.Invoke(currentListItem);
     }
 }

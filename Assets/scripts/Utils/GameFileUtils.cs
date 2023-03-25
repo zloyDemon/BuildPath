@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Enum;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class GameFileUtils
@@ -18,7 +19,13 @@ public class GameFileUtils
         return File.ReadAllText(FilePath);
     }
 
-    public void SaveFieldToFile(List<LevelEditorCell> cells, int enterPointIndex, int exitPointIndex)
+    public static void SaveListLevelDataArray(List<LevelData> models)
+    {
+        string jsonString = JsonConvert.SerializeObject(models);
+        WriteToFile(jsonString);
+    }
+
+    public static void SaveFieldToFile(List<LevelEditorCell> cells, int enterPointIndex, int exitPointIndex)
     {
         var rightCells = new Dictionary<int, int>();
         int[] fieldCells = new int[cells.Count];
@@ -44,5 +51,8 @@ public class GameFileUtils
 
             rightCells[cellId]++;
         }
+        
+        //LevelDataModel model = new LevelDataModel(0, enterPointIndex, exitPointIndex, fieldCells, rightCells);
+        //JsonConvert.SerializeObject(model);
     }
 }
