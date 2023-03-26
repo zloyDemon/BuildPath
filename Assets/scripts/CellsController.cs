@@ -80,7 +80,7 @@ public class CellsController
             }
 
             chip.SetChipOnWay(true);
-            
+            Debug.Log($"{chip.name} {chip.CellType}");
             if (chip == exitPoint)
             {
                 OnCheckCompleted?.Invoke(CheckStatus.Success);
@@ -88,6 +88,7 @@ public class CellsController
             }
             
             chip = Check(chip);
+            
         }
         
         OnCheckCompleted?.Invoke(CheckStatus.NotSuccess);
@@ -107,7 +108,7 @@ public class CellsController
 
     private Chip GetChipByChipPoint(CellPoint point)
     {
-        return chips[point.x, point.y];
+        return chips[point.row, point.column];
     }
     
     private void InitCheckRules()
@@ -118,9 +119,9 @@ public class CellsController
                 CellType.Horizontal, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.CellPoint.x != 0,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x - 1,
-                            c.CellPoint.y)),
+                        c => c.CellPoint.column != 0,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row,
+                            c.CellPoint.column - 1)),
                         new List<CellType>
                         {
                             CellType.Horizontal,
@@ -129,9 +130,9 @@ public class CellsController
                         }),
 
                     new ChipSideCheck(
-                        c => c.CellPoint.x != chips.GetLength(0) - 1,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x + 1,
-                            c.CellPoint.y)),
+                        c => c.CellPoint.column != chips.GetLength(1) - 1,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row,
+                            c.CellPoint.column + 1)),
                         new List<CellType>
                         {
                             CellType.Horizontal,
@@ -145,9 +146,9 @@ public class CellsController
                 CellType.Vertical, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.CellPoint.y != 0,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x,
-                            c.CellPoint.y + 1)),
+                        c => c.CellPoint.row != 0,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row + 1,
+                            c.CellPoint.column)),
                         new List<CellType>
                         {
                             CellType.UpRight,
@@ -156,9 +157,9 @@ public class CellsController
                         }),
 
                     new ChipSideCheck(
-                        c => c.CellPoint.y != chips.GetLength(1) - 1,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x,
-                            c.CellPoint.y - 1)),
+                        c => c.CellPoint.row != chips.GetLength(0) - 1,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row - 1,
+                            c.CellPoint.column)),
                         new List<CellType>
                         {
                             CellType.Vertical,
@@ -172,9 +173,8 @@ public class CellsController
                 CellType.LeftUp, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.CellPoint.x != 0,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x - 1,
-                            c.CellPoint.y)),
+                        c => c.CellPoint.column != 0, 
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row, c.CellPoint.column - 1)), 
                         new List<CellType>
                         {
                             CellType.Horizontal,
@@ -183,9 +183,9 @@ public class CellsController
                         }),
 
                     new ChipSideCheck(
-                        c => c.CellPoint.y != 0,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x,
-                            c.CellPoint.y - 1)),
+                        c => c.CellPoint.row != 0,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row - 1,
+                            c.CellPoint.column)),
                         new List<CellType>
                         {
                             CellType.Vertical,
@@ -199,9 +199,9 @@ public class CellsController
                 CellType.LeftDown, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.CellPoint.x != 0,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x - 1,
-                            c.CellPoint.y)),
+                        c => c.CellPoint.column != 0,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row,
+                            c.CellPoint.column - 1)),
                         new List<CellType>
                         {
                             CellType.Horizontal,
@@ -210,9 +210,9 @@ public class CellsController
                         }),
 
                     new ChipSideCheck(
-                        c => c.CellPoint.y != chips.GetLength(1) - 1,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x,
-                            c.CellPoint.y + 1)),
+                        c => c.CellPoint.row != chips.GetLength(0) - 1,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row + 1,
+                            c.CellPoint.column)),
                         new List<CellType>
                         {
                             CellType.Vertical,
@@ -226,9 +226,9 @@ public class CellsController
                 CellType.UpRight, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.CellPoint.y != 0,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x,
-                            c.CellPoint.y - 1)),
+                        c => c.CellPoint.row != 0,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row - 1,
+                            c.CellPoint.column)),
                         new List<CellType>
                         {
                             CellType.Vertical,
@@ -237,9 +237,9 @@ public class CellsController
                         }),
 
                     new ChipSideCheck(
-                        c => c.CellPoint.x != chips.GetLength(0) - 1,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x + 1,
-                            c.CellPoint.y)),
+                        c => c.CellPoint.column != chips.GetLength(1) - 1,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row,
+                            c.CellPoint.column + 1)),
                         new List<CellType>
                         {
                             CellType.Horizontal,
@@ -253,9 +253,9 @@ public class CellsController
                 CellType.RightDown, new List<ChipSideCheck>
                 {
                     new ChipSideCheck(
-                        c => c.CellPoint.x != chips.GetLength(0) - 1,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x + 1,
-                            c.CellPoint.y)),
+                        c => c.CellPoint.column != chips.GetLength(1) - 1,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row,
+                            c.CellPoint.column + 1)),
                         new List<CellType>
                         {
                             CellType.Horizontal,
@@ -264,9 +264,9 @@ public class CellsController
                         }),
 
                     new ChipSideCheck(
-                        c => c.CellPoint.y != chips.GetLength(1) - 1,
-                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.x,
-                            c.CellPoint.y + 1)),
+                        c => c.CellPoint.row != chips.GetLength(0) - 1,
+                        c => GetChipByChipPoint(CellPoint.CreatChipPoint(c.CellPoint.row + 1,
+                            c.CellPoint.column)),
                         new List<CellType>
                         {
                             CellType.Vertical,

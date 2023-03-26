@@ -1,27 +1,27 @@
 [System.Serializable]
 public struct CellPoint
 {
-    public int x;
-    public int y;
+    public int row;
+    public int column;
 
-    public CellPoint(int x, int y)
+    public CellPoint(int row, int column)
     {
-        this.x = x;
-        this.y = y;
+        this.row = row;
+        this.column = column;
     }
 
     public override string ToString()
     {
-        return $"X: {x} Y: {y}";
+        return $"X: {row} Y: {column}";
     }
 
     public bool Equals(CellPoint p)
     {
-        return p.x == this.x && p.y == this.y;
+        return p.row == this.row && p.column == this.column;
     }
 
-    public static CellPoint CreatChipPoint(int x, int y)
+    public static CellPoint CreatChipPoint(int row, int column)
     {
-        return new CellPoint(x, y);
+        return new CellPoint(row, column);
     }
 }

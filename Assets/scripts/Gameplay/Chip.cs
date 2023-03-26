@@ -22,7 +22,7 @@ public class Chip : MonoBehaviour
 
     public void SetP()
     {
-        p = new Vector2(CellPoint.x, CellPoint.y);
+        p = new Vector2(CellPoint.row, CellPoint.column);
     }
     
     public virtual void SetChipData(CellType cellType, Sprite sprite)

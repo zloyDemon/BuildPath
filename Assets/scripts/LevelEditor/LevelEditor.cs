@@ -101,13 +101,13 @@ public class LevelEditor : MonoBehaviour
     private void OnEnterPointDragging(PointerEventData data)
     {
         ChooseSideCell(data, ref currentEnterPoint, enterPointDraggable ,leftSideCells, Vector3.left);
-        levelDataListView.CurrentListItem.LevelData.EnterPointIndex = currentEnterPoint.CellPoint.y;
+        levelDataListView.CurrentListItem.LevelData.EnterPointIndex = currentEnterPoint.CellPoint.column;
     }
 
     private void OnExitPointDragging(PointerEventData data)
     {
         ChooseSideCell(data, ref currentExitPoint, exitPointDraggable, rightSideCells, Vector3.right);
-        levelDataListView.CurrentListItem.LevelData.ExitPointIndex = currentExitPoint.CellPoint.y;
+        levelDataListView.CurrentListItem.LevelData.ExitPointIndex = currentExitPoint.CellPoint.column;
     }
 
     private void SetEdgeCell(ref LevelEditorCell currentCell, LevelEditorCell cellFrom, DraggableElement sideMarkElement, Vector3 direction)

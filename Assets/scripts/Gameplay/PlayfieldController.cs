@@ -92,15 +92,15 @@ public class PlayfieldController : MonoBehaviour
             {
                 Vector3 pos = new Vector3(col * cellSize.x + gridOffset.x + transform.position.x, -(row * cellSize.y + gridOffset.y - transform.position.y));
                 Chip chip = Instantiate(originalEmptyChip, transform, true);
-                chip.gameObject.name = $"{chip.gameObject.name}_{col}_{row}"; 
-                chip.Init(new CellPoint(col, row));
+                chip.gameObject.name = $"{chip.gameObject.name}_{row}_{col}"; 
+                chip.Init(new CellPoint(row, col));
                 chip.SetClickListener(OnChipClick);
                 chip.transform.position = pos;
                 chip.SetChipColor(Color.gray);
                 var id = field[row, col];
                 var type = GetTypeById(id);
                 chip.SetChipData(type, GetChipSpriteByType(type));
-                chips[col, row] = chip;
+                chips[row, col] = chip;
                 
                 // Todo
                 if (id == 1)
